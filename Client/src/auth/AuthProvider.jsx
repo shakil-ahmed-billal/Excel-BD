@@ -12,7 +12,7 @@ const AuthProvider = ({children}) => {
     const [user, setUser] = useState({
         id: 1,
         name: 'John Doe',
-        role: 'customer', // roles can be 'admin', 'agent', 'customer'
+        role: 'admin', // roles can be 'admin', 'agent', 'customer'
     });
 
     const authInfo = {
