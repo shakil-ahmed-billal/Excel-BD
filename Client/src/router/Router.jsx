@@ -1,9 +1,11 @@
-import { Navigate, Routes, Route } from 'react-router-dom';
-import useAuth from '../hook/useAuth';
-import Header from '../layout/Header/Header';
+import Login from '@/auth/login/Login';
+import Register from '@/auth/register/Register';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import AdminDashboard from '../dashboard/AdminDashboard';
-import CustomerDashboard from '../dashboard/CustomerDashboard';
 import AgentDashboard from '../dashboard/AgentDashboard';
+import CustomerDashboard from '../dashboard/CustomerDashboard';
+import useAuth from '../hooks/useAuth';
+import Header from '../layout/Header/Header';
 import ProtectedRoute from '../provider/ProtectedRoute';
 
 const AppLayout = ({ children }) => {
@@ -25,6 +27,15 @@ export const Router = () => {
   return (
     <AppLayout>
       <Routes>
+        {/* Public Routes */}
+        <Route
+          path="/login"
+          element={!isAuthenticated ? <Login /> : <Navigate to={`/${user?.role}/dashboard`} />}
+        />
+        <Route
+          path="/register"
+          element={!isAuthenticated ? <Register /> : <Navigate to={`/${user?.role}/dashboard`} />}
+        />
         {/* Protected Routes */}
         <Route path="/admin/dashboard" element={
           <ProtectedRoute requiredRole="admin">

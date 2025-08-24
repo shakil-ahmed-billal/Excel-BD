@@ -4,10 +4,16 @@ const dotenv = require("dotenv");
 const morgan = require("morgan");
 const connectDB = require("./config/DBconnect");
 
+//route import
+const userRoutes = require("./routers/userRoutes");
+
+
+
 const app = express();
 dotenv.config();
 const port = process.env.PORT || 5000;
 
+// middleware connection
 // middleware connection
 app.use(
   cors({
@@ -25,11 +31,17 @@ app.use(morgan("dev"));
 // database connection
 connectDB();
 
-// route definition
+
+// Connect user routes
 app.use("/api/user", userRoutes);
-app.use("/api", infoRoutes);
-app.use("/api", transactionRoutes);
-app.use("/api", userStatsRoutes);
+
+// Test route
+app.post('/test', (req, res) => {
+  console.log(req.body);
+  const { name } = req.body;
+  res.send(`Hello, ${name}`);
+});
+
 
 // server start debug
 app.get("/", (req, res) => res.send("server  is running"));
