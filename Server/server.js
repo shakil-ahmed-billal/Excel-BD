@@ -19,8 +19,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173",
-      "https://zap-cash.vercel.app",
-      "https://zapcash-0.web.app",
+      "https://excel-bd.vercel.app",
     ],
     credentials: true,
   })
