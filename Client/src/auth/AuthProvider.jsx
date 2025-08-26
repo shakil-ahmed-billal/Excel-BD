@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { loginUser, registerUser } from '@/utils/auth'
 import Cookies from 'js-cookie'
 import { createContext, useEffect, useState } from 'react'

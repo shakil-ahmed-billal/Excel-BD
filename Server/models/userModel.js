@@ -6,10 +6,9 @@ const userSchema = new mongoose.Schema(
     photoURL: { type: String, default: "" },
     number: { type: String, required: true, unique: true, trim: true },
     email: { type: String, required: true, unique: true, trim: true },
-    pin: { type: String, required: true },
-    nid: { type: String, default: "" },
+    password: { type: String, required: true },
     balance: { type: Number, default: 0 },
-    acType: { type: String, enum: ["customer", "agent" , "admin"], default: "customer" },
+    role: { type: String, enum: ["customer", "agent" , "admin"], default: "customer" },
     acStatus: { type: String, enum: ["unverified", "verified", "pending" ,"suspended"], default: "unverified" },
   },
   { timestamps: true }
