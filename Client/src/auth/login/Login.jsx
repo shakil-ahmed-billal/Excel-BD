@@ -33,10 +33,46 @@ const Login = () => {
 
     return (
         <div className="w-11/12 md:w-10/12 mx-auto  min-h-screen">
+            <div className="absolute top-5 right-5 md:top-10 md:right-10">
+                <Card className="shadow-md max-w-md rounded-xl border border-gray-200">
+                    <CardHeader>
+                        <CardTitle className="text-lg font-semibold text-center">
+                            Demo Login Credentials
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <table className="w-full text-sm border border-gray-200 rounded-lg overflow-hidden">
+                            <thead className="bg-gray-100 text-left">
+                                <tr>
+                                    <th className="p-2 border">Role</th>
+                                    <th className="p-2 border">Email</th>
+                                    <th className="p-2 border">Password</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td className="p-2 border">Admin</td>
+                                    <td className="p-2 border">admin@gmail.com</td>
+                                    <td className="p-2 border">admin123</td>
+                                </tr>
+                                <tr>
+                                    <td className="p-2 border">Agent</td>
+                                    <td className="p-2 border">agent@gmail.com</td>
+                                    <td className="p-2 border">agent123</td>
+                                </tr>
+                                <tr>
+                                    <td className="p-2 border">Customer</td>
+                                    <td className="p-2 border">customer@gmail.com</td>
+                                    <td className="p-2 border">customer123</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </CardContent>
+                </Card>
+            </div>
             <Link to={"/"}><Button variant={"ghost"} className={"md:mt-20 mt-3"}><ArrowLeft />Back to Home</Button></Link>
             <div className="flex items-center justify-center mt-5 md:mt-20 relative">
-                <div className="absolute inset-0 bg-gradient-to-r from-primary to-accent opacity-20 blur-3xl rounded-full pointer-events-none" />
-                <Card className="w-full max-w-md shadow-lg rounded-2xl bg-transparent">
+                <Card className="w-full max-w-md shadow-lg rounded-2xl ">
                     <CardHeader>
                         <CardTitle className="text-center text-2xl font-bold">Welcome Back</CardTitle>
                         <p className="text-center text-gray-500 text-sm">Sign in to continue</p>
@@ -55,13 +91,13 @@ const Login = () => {
                                 />
                             </div>
                             <div>
-                                <Label htmlFor="pin">PIN</Label>
+                                <Label htmlFor="password">Password</Label>
                                 <Input
-                                    {...register("pin")}
-                                    name="pin"
-                                    id="pin"
+                                    {...register("password")}
+                                    name="password"
+                                    id="password"
                                     type="password"
-                                    placeholder="Enter your PIN"
+                                    placeholder="Enter your Password"
                                     required
                                 />
                             </div>

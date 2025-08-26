@@ -7,9 +7,9 @@ const registerUser = async (req, res) => {
 
   console.log(req.body);
   try {
-    const { email, number, name, pin } = req.body;
+    const { email, number, name, password } = req.body;
 
-    if (!email || !number || !name || !pin) {
+    if (!email || !number || !name || !password) {
       return res.status(400).json({
         success: false,
         message: "All fields are required",
@@ -32,7 +32,7 @@ const registerUser = async (req, res) => {
       });
     }
 
-    const hashedPin = await bcrypt.hash(pin, 10);
+    const hashedPassword = await bcrypt.hash(password, 10);
     const token = jwt.sign({ email, number }, process.env.SECRET_KEY, {
       expiresIn: "1d",
     });
@@ -40,7 +40,7 @@ const registerUser = async (req, res) => {
       name,
       number,
       email,
-      pin: hashedPin,
+      password: hashedPassword,
     });
     res
       .cookie("token", token, {
@@ -57,6 +57,7 @@ const registerUser = async (req, res) => {
           number: user.number,
           email: user.email,
           photoURL: user.photoURL,
+          role: user.role,
         },
       });
   } catch (error) {
@@ -78,10 +79,10 @@ const loginUser = async (req, res) => {
   console.log(req.body);
   
   try {
-    const { email, pin } = req.body;
+    const { email, password } = req.body;
 
     
-    if (!email || !pin) {
+    if (!email || !password) {
       return res.status(400).send({
         success: false,
         message: "All fields are required",
@@ -96,10 +97,10 @@ const loginUser = async (req, res) => {
       });
     }
 
-    if (!(await bcrypt.compare(pin, findUser.pin))) {
+    if (!(await bcrypt.compare(password, findUser.password))) {
       return res.status(400).send({
         success: false,
-        message: "Incorrect pin",
+        message: "Incorrect Password",
       });
     }
 
@@ -112,6 +113,7 @@ const loginUser = async (req, res) => {
           number: findUser.number,
           email: findUser.email,
           photoURL: findUser.photoURL,
+          role: findUser.role,
         },
       });
     }
@@ -143,7 +145,7 @@ const userVerify = async (req, res) => {
     }
 
     // Update user details
-    if (acType === "user") {
+    if (acType === "customer") {
       user.acType = acType;
       user.nid = nid;
       user.acStatus = "verified";

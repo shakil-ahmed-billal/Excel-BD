@@ -1,5 +1,12 @@
 import Login from '@/auth/login/Login';
 import Register from '@/auth/register/Register';
+import AdminAgents from '@/components/admin/AdminAgents';
+import AdminParcels from '@/components/admin/AdminParcels';
+import AdminReports from '@/components/admin/AdminReports';
+import AgentParcels from '@/components/agent/AgentParcels';
+import BookParcelForm from '@/components/booking/BookParcelForm';
+import ParcelHistory from '@/components/customer/ParcelHistory';
+import TrackParcel from '@/components/tracking/TrackParcel';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import AdminDashboard from '../dashboard/AdminDashboard';
 import AgentDashboard from '../dashboard/AgentDashboard';
@@ -7,6 +14,7 @@ import CustomerDashboard from '../dashboard/CustomerDashboard';
 import useAuth from '../hooks/useAuth';
 import Header from '../layout/Header/Header';
 import ProtectedRoute from '../provider/ProtectedRoute';
+import NotFound from '@/error/NotFound';
 
 const AppLayout = ({ children }) => {
   const { user } = useAuth();
@@ -22,7 +30,7 @@ const AppLayout = ({ children }) => {
 };
 
 export const Router = () => {
-  const {  user } = useAuth();
+  const { user } = useAuth();
 
   return (
     <AppLayout>
@@ -36,65 +44,73 @@ export const Router = () => {
           path="/register"
           element={!user ? <Register /> : <Navigate to={`/${user?.role}/dashboard`} />}
         />
-        {/* Protected Routes */}
+
+        {/* Admin Routes */}
         <Route path="/admin/dashboard" element={
           <ProtectedRoute requiredRole="admin">
             <AdminDashboard />
           </ProtectedRoute>
         } />
-        <Route path="/customer/dashboard" element={
-          <ProtectedRoute requiredRole="customer">
-            <CustomerDashboard />
+        <Route path="/admin/parcels" element={
+          <ProtectedRoute requiredRole="admin">
+            <AdminParcels />
           </ProtectedRoute>
         } />
+        <Route path="/admin/agents" element={
+          <ProtectedRoute requiredRole="admin">
+            <AdminAgents />
+          </ProtectedRoute>
+        } />
+        <Route path="/admin/reports" element={
+          <ProtectedRoute requiredRole="admin">
+            <AdminReports />
+          </ProtectedRoute>
+        } />
+
+        {/* Agent Routes */}
         <Route path="/agent/dashboard" element={
           <ProtectedRoute requiredRole="agent">
             <AgentDashboard />
           </ProtectedRoute>
         } />
+        <Route path="/agent/parcels" element={
+          <ProtectedRoute requiredRole="agent">
+            <AgentParcels />
+          </ProtectedRoute>
+        } />
 
-        {/* Placeholder routes for future features */}
+        {/* Customer Routes */}
+        <Route path="/customer/dashboard" element={
+          <ProtectedRoute requiredRole="customer">
+            <CustomerDashboard />
+          </ProtectedRoute>
+        } />
         <Route path="/customer/book" element={
           <ProtectedRoute requiredRole="customer">
-            <div className="p-6 text-center">
-              <h1 className="text-2xl font-bold">Book Parcel</h1>
-              <p>Parcel booking feature coming soon...</p>
-            </div>
+            <BookParcelForm />
           </ProtectedRoute>
         } />
         <Route path="/customer/parcels" element={
           <ProtectedRoute requiredRole="customer">
-            <div className="p-6 text-center">
-              <h1 className="text-2xl font-bold">My Parcels</h1>
-              <p>Parcel management feature coming soon...</p>
-            </div>
+            <ParcelHistory />
           </ProtectedRoute>
         } />
         <Route path="/customer/track" element={
           <ProtectedRoute requiredRole="customer">
-            <div className="p-6 text-center">
-              <h1 className="text-2xl font-bold">Track Parcel</h1>
-              <p>Real-time tracking feature coming soon...</p>
-            </div>
+            <TrackParcel />
+          </ProtectedRoute>
+        } />
+        <Route path="/customer/track/:trackingNumber" element={
+          <ProtectedRoute requiredRole="customer">
+            <TrackParcel />
           </ProtectedRoute>
         } />
 
-        {/* Default redirects */}
-        <Route path="/" element={
-          user ?
-            <Navigate to={`/${user?.role}/dashboard`} /> :
-            <Navigate to="/login" />
-        } />
+        {/* Default redirect */}
+        <Route path="/" element={<Navigate to="/login" replace />} />
 
-        {/* 404 Page */}
-        <Route path="*" element={
-          <div className="min-h-screen flex items-center justify-center">
-            <div className="text-center">
-              <h1 className="text-4xl font-bold text-gray-900 mb-4">404</h1>
-              <p className="text-gray-600">Page not found</p>
-            </div>
-          </div>
-        } />
+        {/* 404 Not Found Route */}
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </AppLayout>
   );
