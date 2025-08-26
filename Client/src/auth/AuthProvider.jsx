@@ -7,7 +7,6 @@ export const AuthContext = createContext(null)
 
 const AuthProvider = ({ children }) => {
 
-    const [isAuthenticated, setIsAuthenticated] = useState(false)
     const [user, setUser] = useState(null)
     const [token, setToken] = useState(null)
     const [loading, setLoading] = useState(true)
@@ -66,6 +65,7 @@ const AuthProvider = ({ children }) => {
         setUser(null)
         setToken(null)
         setLoading(false)
+
     }
 
     // Check for user token and user data on first render
@@ -76,6 +76,7 @@ const AuthProvider = ({ children }) => {
         if (userToken && savedUser) {
             setUser(JSON.parse(savedUser))
             setToken(userToken)
+   
         }
 
         setLoading(false)
@@ -88,8 +89,7 @@ const AuthProvider = ({ children }) => {
         userRegister,
         userLogOut,
         userLogin,
-        isAuthenticated,
-        setIsAuthenticated
+   
     }
 
     return (

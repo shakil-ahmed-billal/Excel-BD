@@ -74,16 +74,20 @@ const registerUser = async (req, res) => {
 
 // login user controller
 const loginUser = async (req, res) => {
-  try {
-    const { number, pin } = req.body;
 
-    if (!number || !pin) {
+  console.log(req.body);
+  
+  try {
+    const { email, pin } = req.body;
+
+    
+    if (!email || !pin) {
       return res.status(400).send({
         success: false,
         message: "All fields are required",
       });
     }
-    const findUser = await User.findOne({ number });
+    const findUser = await User.findOne({ email });
 
     if (!findUser) {
       return res.status(400).json({

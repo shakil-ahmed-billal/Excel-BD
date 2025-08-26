@@ -44,13 +44,13 @@ const Login = () => {
                     <CardContent>
                         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                             <div>
-                                <Label htmlFor="number">Number</Label>
+                                <Label htmlFor="email">Email</Label>
                                 <Input
-                                    {...register("number")}
-                                    name="number"
-                                    id="number"
-                                    type="number"
-                                    placeholder="Enter your Number"
+                                    {...register("email")}
+                                    name="email"
+                                    id="email"
+                                    type="email"
+                                    placeholder="Enter your email"
                                     required
                                 />
                             </div>

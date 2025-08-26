@@ -1,3 +1,4 @@
+import useAuth from '@/hooks/useAuth';
 import {
     Bell,
     LogOut,
@@ -8,18 +9,22 @@ import {
     X
 } from 'lucide-react';
 import { useState } from 'react';
+import toast from 'react-hot-toast';
 import { Link, useNavigate } from 'react-router-dom';
-import useAuth from '../../hooks/useAuth';
 
 const Header = () => {
-    const { user, logout } = useAuth();
+    const { user, userLogOut } = useAuth();
     const navigate = useNavigate();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isProfileOpen, setIsProfileOpen] = useState(false);
 
-    const handleLogout = () => {
-        logout();
-        navigate('/login');
+    const handleLogout = async () => {
+        const logOut = await userLogOut();
+        if (logOut) {
+            toast.success('Logged out successfully');
+            navigate('/login');
+        }
+        
     };
 
     const getNavLinks = () => {

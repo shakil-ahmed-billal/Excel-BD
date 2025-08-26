@@ -9,12 +9,12 @@ import Header from '../layout/Header/Header';
 import ProtectedRoute from '../provider/ProtectedRoute';
 
 const AppLayout = ({ children }) => {
-  const { isAuthenticated } = useAuth();
+  const { user } = useAuth();
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {isAuthenticated && <Header />}
-      <main className={isAuthenticated ? '' : 'min-h-screen'}>
+      {user && <Header />}
+      <main className={user ? '' : 'min-h-screen'}>
         {children}
       </main>
     </div>
@@ -22,7 +22,7 @@ const AppLayout = ({ children }) => {
 };
 
 export const Router = () => {
-  const { isAuthenticated, user } = useAuth();
+  const {  user } = useAuth();
 
   return (
     <AppLayout>
@@ -30,11 +30,11 @@ export const Router = () => {
         {/* Public Routes */}
         <Route
           path="/login"
-          element={!isAuthenticated ? <Login /> : <Navigate to={`/${user?.role}/dashboard`} />}
+          element={!user ? <Login /> : <Navigate to={`/${user?.role}/dashboard`} />}
         />
         <Route
           path="/register"
-          element={!isAuthenticated ? <Register /> : <Navigate to={`/${user?.role}/dashboard`} />}
+          element={!user ? <Register /> : <Navigate to={`/${user?.role}/dashboard`} />}
         />
         {/* Protected Routes */}
         <Route path="/admin/dashboard" element={
@@ -81,7 +81,7 @@ export const Router = () => {
 
         {/* Default redirects */}
         <Route path="/" element={
-          isAuthenticated ?
+          user ?
             <Navigate to={`/${user?.role}/dashboard`} /> :
             <Navigate to="/login" />
         } />
