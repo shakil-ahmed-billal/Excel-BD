@@ -53,6 +53,7 @@ const registerUser = async (req, res) => {
         success: true,
         message: "User created successfully",
         user: {
+          customerId: user._id,
           name: user.name,
           number: user.number,
           email: user.email,
@@ -109,6 +110,7 @@ const loginUser = async (req, res) => {
         success: true,
         message: "User logged in successfully",
         user: {
+          customerId: findUser._id,
           name: findUser.name,
           number: findUser.number,
           email: findUser.email,

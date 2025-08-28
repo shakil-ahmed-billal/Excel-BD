@@ -16,13 +16,31 @@ import {
   TrendingUp,
   Activity
 } from 'lucide-react';
+import { useEffect } from 'react';
+import useAxiosPublic from '@/hooks/useAxiosPublic';
 
 const AdminAgents = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [selectedAgent, setSelectedAgent] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [allAgent , setAllAgent] = useState([]);
+  const axiosPublic = useAxiosPublic();
 
+
+  useEffect(() => {
+    const fetchAgents = async () => {
+      try {
+        const response = await axiosPublic.get('/api/agents');
+        setAllAgent(response.data);
+      } catch (error) {
+        console.error("Error fetching agents:", error);
+      }
+    };
+    fetchAgents();
+  }, [axiosPublic]);
+
+  console.log(allAgent);
   // Mock data - replace with actual API calls
   const agents = [
     {

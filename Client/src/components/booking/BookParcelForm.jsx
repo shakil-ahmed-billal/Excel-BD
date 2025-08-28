@@ -14,6 +14,8 @@ import {
   AlertCircle
 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import useAuth from '@/hooks/useAuth';
+import useAxiosPublic from '@/hooks/useAxiosPublic';
 
 
 
@@ -21,6 +23,8 @@ const BookParcelForm = () => {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
   const [loading, setLoading] = useState(false);
+  const {user} = useAuth();
+  const axiosPublic = useAxiosPublic();
   const [formData, setFormData] = useState({
     pickupAddress: {
       street: '',
@@ -58,6 +62,8 @@ const BookParcelForm = () => {
     pickupTime: '',
     specialInstructions: ''
   });
+
+  console.log(user)
 
   const steps = [
     { id: 1, title: 'Pickup Address', icon: MapPin },
@@ -123,6 +129,15 @@ const BookParcelForm = () => {
 };
 
 
+const handleRootInputChange = (field, value) => {
+  setFormData(prev => ({
+    ...prev,
+    [field]: value,
+  }));
+};
+
+
+
   const validateStep = (step) => {
     switch (step) {
       case 1:
@@ -166,10 +181,30 @@ const BookParcelForm = () => {
       await new Promise(resolve => setTimeout(resolve, 2000));
       
       const trackingNumber = 'CP' + Date.now().toString().slice(-10);
+
+      const parcelInfo = {
+        customerId:user.customerId,
+        trackingNumber,
+        customer:user.name,
+        customerPhone:user.phone,
+        recipient:formData.deliveryAddress.contactName,
+        recipientPhone:formData.deliveryAddress.contactPhone,
+        ...formData}
+
+      console.log('Parcel booked:', parcelInfo);
+
+      // create parcel for database 
+      const parcelStoreDatabase = await axiosPublic.post('/api/parcel', parcelInfo);
+      console.log(parcelStoreDatabase);
+
+
+
       toast.success(`Parcel booked successfully! Tracking: ${trackingNumber}`);
       navigate('/customer/parcels');
     } catch (error) {
-      toast.error('Failed to book parcel. Please try again.');
+      if(error){
+        toast.error('Failed to book parcel. Please try again.');
+      }
     } finally {
       setLoading(false);
     }
@@ -496,7 +531,7 @@ const BookParcelForm = () => {
                         ? 'border-orange-500 bg-orange-50'
                         : 'border-gray-200 hover:border-orange-300'
                     }`}
-                    onClick={() => handleInputChange('', 'serviceType', service.id)}
+                    onClick={() => handleRootInputChange('serviceType', service.id)}
                   >
                     <div className="flex items-center justify-between">
                       <div>
@@ -522,7 +557,7 @@ const BookParcelForm = () => {
                   type="date"
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                   value={formData.pickupDate}
-                  onChange={(e) => handleInputChange('', 'pickupDate', e.target.value)}
+                  onChange={(e) => handleRootInputChange('pickupDate', e.target.value)}
                   min={new Date().toISOString().split('T')[0]}
                 />
               </div>
@@ -534,7 +569,7 @@ const BookParcelForm = () => {
                 <select
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                   value={formData.pickupTime}
-                  onChange={(e) => handleInputChange('', 'pickupTime', e.target.value)}
+                  onChange={(e) => handleRootInputChange('pickupTime', e.target.value)}
                 >
                   <option value="">Select time</option>
                   <option value="09:00-12:00">9:00 AM - 12:00 PM</option>
@@ -555,7 +590,7 @@ const BookParcelForm = () => {
                       ? 'border-green-500 bg-green-50'
                       : 'border-gray-200 hover:border-green-300'
                   }`}
-                  onClick={() => handleInputChange('', 'paymentType', 'prepaid')}
+                 onClick={() => handleRootInputChange('paymentType', 'prepaid')}
                 >
                   <div className="flex items-center space-x-3">
                     <CreditCard className="h-6 w-6 text-green-600" />
@@ -572,7 +607,7 @@ const BookParcelForm = () => {
                       ? 'border-blue-500 bg-blue-50'
                       : 'border-gray-200 hover:border-blue-300'
                   }`}
-                  onClick={() => handleInputChange('', 'paymentType', 'cod')}
+                  onClick={() => handleRootInputChange('paymentType', 'cod')}
                 >
                   <div className="flex items-center space-x-3">
                     <DollarSign className="h-6 w-6 text-blue-600" />
@@ -597,7 +632,7 @@ const BookParcelForm = () => {
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   placeholder="0.00"
                   value={formData.codAmount || ''}
-                  onChange={(e) => handleInputChange('', 'codAmount', parseFloat(e.target.value) || 0)}
+                onChange={(e) => handleRootInputChange('codAmount', parseFloat(e.target.value) || 0)}
                 />
               </div>
             )}
@@ -611,7 +646,7 @@ const BookParcelForm = () => {
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                 placeholder="Any special handling instructions..."
                 value={formData.specialInstructions}
-                onChange={(e) => handleInputChange('', 'specialInstructions', e.target.value)}
+                onChange={(e) => handleRootInputChange('specialInstructions', e.target.value)}
               />
             </div>
           </div>
@@ -744,7 +779,7 @@ const BookParcelForm = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-11/12 mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Progress Steps */}
         <div className="mb-8">
           <div className="flex items-center justify-between">
