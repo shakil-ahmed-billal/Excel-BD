@@ -16,31 +16,15 @@ import {
   TrendingUp,
   Activity
 } from 'lucide-react';
-import { useEffect } from 'react';
-import useAxiosPublic from '@/hooks/useAxiosPublic';
+import AddAgentForm from './AddAgentForm';
 
 const AdminAgents = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [selectedAgent, setSelectedAgent] = useState(null);
   const [showModal, setShowModal] = useState(false);
-  const [allAgent , setAllAgent] = useState([]);
-  const axiosPublic = useAxiosPublic();
+  const [showAddForm, setShowAddForm] = useState(false);
 
-
-  useEffect(() => {
-    const fetchAgents = async () => {
-      try {
-        const response = await axiosPublic.get('/api/agents');
-        setAllAgent(response.data);
-      } catch (error) {
-        console.error("Error fetching agents:", error);
-      }
-    };
-    fetchAgents();
-  }, [axiosPublic]);
-
-  console.log(allAgent);
   // Mock data - replace with actual API calls
   const agents = [
     {
@@ -160,7 +144,10 @@ const AdminAgents = () => {
             <h1 className="text-3xl font-bold text-gray-900">Agent Management</h1>
             <p className="text-gray-600 mt-2">Manage delivery agents and their performance</p>
           </div>
-          <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2">
+          <button 
+            onClick={() => setShowAddForm(true)}
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
+          >
             <Plus className="h-4 w-4" />
             <span>Add Agent</span>
           </button>
@@ -522,6 +509,16 @@ const AdminAgents = () => {
           </div>
         </div>
       )}
+
+      {/* Add Agent Form Modal */}
+      <AddAgentForm
+        isOpen={showAddForm}
+        onClose={() => setShowAddForm(false)}
+        onSuccess={() => {
+          // Refresh agents list
+          console.log('Agent created successfully');
+        }}
+      />
     </div>
   );
 };
