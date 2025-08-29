@@ -6,7 +6,8 @@ const connectDB = require("./config/DBconnect");
 
 //route import
 const userRoutes = require("./routers/userRoutes");
-
+const parcelRoutes = require("./routers/parcelRoutes")
+const adminParcelRoutes = require("./routers/adminParcelRoutes")
 
 
 const app = express();
@@ -33,13 +34,8 @@ connectDB();
 
 // Connect user routes
 app.use("/api/user", userRoutes);
-
-// Test route
-app.post('/test', (req, res) => {
-  console.log(req.body);
-  const { name } = req.body;
-  res.send(`Hello, ${name}`);
-});
+app.use("/api/parcel", parcelRoutes);
+app.use("/api", adminParcelRoutes);
 
 
 // server start debug

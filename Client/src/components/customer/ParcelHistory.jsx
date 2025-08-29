@@ -13,11 +13,33 @@ import {
   Calendar
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import useAuth from '@/hooks/useAuth';
+import { useEffect } from 'react';
+import useAxiosPublic from '@/hooks/useAxiosPublic';
 
 const ParcelHistory = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [dateFilter, setDateFilter] = useState('all');
+  const {user} = useAuth();
+  const axiosPublic = useAxiosPublic();
+
+  const [parcelData , setParcelData] = useState([]);
+
+  useEffect(() => {
+    const fetchParcels = async () => {
+      try {
+        const response = await axiosPublic.get(`/api/parcel/customer/${user.customerId}`);
+        setParcelData(response.data);
+      } catch (error) {
+        console.error("Error fetching parcels:", error);
+      }
+    };
+    fetchParcels();
+
+  }, [axiosPublic, user]);
+
+  console.log(parcelData);
 
   // Mock data - replace with actual API calls
   const parcels = [
@@ -45,51 +67,6 @@ const ParcelHistory = () => {
         { status: 'picked_up', timestamp: '2024-01-16T09:15:00Z', location: 'New York, NY' },
         { status: 'in_transit', timestamp: '2024-01-16T11:30:00Z', location: 'Manhattan, NY' },
         { status: 'delivered', timestamp: '2024-01-17T14:30:00Z', location: 'Brooklyn, NY' }
-      ]
-    },
-    {
-      id: 'CP001235',
-      trackingNumber: 'CP001235567891',
-      status: 'in_transit',
-      recipient: 'John Smith',
-      recipientPhone: '+1234567892',
-      pickupAddress: '789 Pine St, Manhattan, NY 10002',
-      deliveryAddress: '321 Cedar Ave, Queens, NY 11101',
-      parcelType: 'electronics',
-      weight: 1.2,
-      value: 500.00,
-      paymentType: 'cod',
-      codAmount: 500.00,
-      serviceType: 'standard',
-      createdAt: '2024-01-16T08:45:00Z',
-      estimatedDelivery: '2024-01-19T17:00:00Z',
-      cost: 25.99,
-      agentName: 'Emily Davis',
-      statusHistory: [
-        { status: 'pending', timestamp: '2024-01-16T08:45:00Z', location: 'Manhattan, NY' },
-        { status: 'assigned', timestamp: '2024-01-16T12:00:00Z', location: 'Manhattan, NY' },
-        { status: 'picked_up', timestamp: '2024-01-17T10:20:00Z', location: 'Manhattan, NY' },
-        { status: 'in_transit', timestamp: '2024-01-17T15:45:00Z', location: 'Midtown, NY' }
-      ]
-    },
-    {
-      id: 'CP001236',
-      trackingNumber: 'CP001236567892',
-      status: 'pending',
-      recipient: 'Lisa Brown',
-      recipientPhone: '+1234567893',
-      pickupAddress: '654 Elm St, Bronx, NY 10451',
-      deliveryAddress: '987 Maple Ave, Staten Island, NY 10301',
-      parcelType: 'fragile',
-      weight: 3.8,
-      value: 200.00,
-      paymentType: 'prepaid',
-      serviceType: 'overnight',
-      createdAt: '2024-01-17T16:20:00Z',
-      estimatedDelivery: '2024-01-18T12:00:00Z',
-      cost: 59.99,
-      statusHistory: [
-        { status: 'pending', timestamp: '2024-01-17T16:20:00Z', location: 'Bronx, NY' }
       ]
     }
   ];
